@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension version="3.1" type="plugin" group="content" method="upgrade">
+	<name>plg_content_socialshare</name>
+	<author>Joomla! Project</author>
+	<creationDate>November 2005</creationDate>
+	<copyright>Copyright (C) 2005 - 2013 Open Source Matters. All rights reserved.</copyright>
+	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
+	<authorEmail>admin@joomla.org</authorEmail>
+	<authorUrl>www.joomla.org</authorUrl>
+	<version>0.0.4</version>
+	<description>PLG_SOCIALSHARE_XML_DESCRIPTION</description>
+	<files>
+		<filename plugin="socialshare">socialshare.php</filename>
+		<folder>assets</folder>
+		<folder>themes</folder>
+		<filename>index.html</filename>
+	</files>
+	<!--
+	<languages>
+		<language tag="en-GB">en-GB.plg_content_socialshare.ini</language>
+		<language tag="en-GB">en-GB.plg_content_socialshare.sys.ini</language>
+	</languages>
+	-->
+	<config>
+		<fields name="params">
+		
+			<fieldset name="basic">
+			
+				<field name="theme" default="basic" type="list" label="PLG_CONTENT_SOCIALSHARE_THEME_LABEL" description="PLG_CONTENT_SOCIALSHARE_THEME_DESC">					
+					<option value="basic">PLG_CONTENT_SHARE_THEME_BASIC</option>
+					<option value="buttons">PLG_CONTENT_SHARE_THEME_buttons</option>
+					<option value="metroui">PLG_CONTENT_SHARE_THEME_metroui</option>
+				</field>
+			
+				<field name="position" default="onContentBeforeDisplay" type="list" label="PLG_CONTENT_SOCIALSHARE_POSITION_LABEL" description="PLG_CONTENT_SOCIALSHARE_POSITION_DESC">					
+					<option value="onContentBeforeDisplay">PLG_CONTENT_SHARE_CONTENT_BEFORE</option>
+					<option value="onContentAfterDisplay">PLG_CONTENT_SHARE_CONTENT_AFTER</option>
+				</field>
+			
+				<field name="views" default="" type="list" multiple="multiple" label="PLG_CONTENT_SOCIALSHARE_VIEWS_LABEL" description="PLG_CONTENT_SOCIALSHARE_VIEWS_DESC">	
+					<option value="archive">Archive</option>
+					<option value="article">Article</option>
+					<option value="categories">Categories</option>
+					<option value="category">Category</option>
+					<option value="featured">Featured</option>
+				</field>
+				
+			</fieldset>
+			
+			<fieldset name="twitter" label="Twitter">
+				<field name="twitter" default="1" type="radio" class="btn-group" label="Twitter" description="Twitter">
+					<option value="1">JSHOW</option>
+					<option value="0">JHIDE</option>
+				</field>
+				<field name="twitter-via" default="" type="text" class="btn-group" label="Username" description="Username" />
+			</fieldset>
+			
+			<fieldset name="facebook" label="Facebook">
+				<field name="facebook" default="1" type="radio" class="btn-group" label="Facebook" description="Facebook">
+					<option value="1">JSHOW</option>
+					<option value="0">JHIDE</option>
+				</field>
+			</fieldset>
+			
+			<fieldset name="google" label="Google+">
+				<field name="google" default="1" type="radio" class="btn-group" label="Google+" description="Google+">
+					<option value="1">JSHOW</option>
+					<option value="0">JHIDE</option>
+				</field>
+			</fieldset>
+			
+			<fieldset name="linkedin" label="LinkedIn">
+				<field name="linkedin" default="1" type="radio" class="btn-group" label="LinkedIn" description="LinkedIn">
+					<option value="1">JSHOW</option>
+					<option value="0">JHIDE</option>
+				</field>
+			</fieldset>
+			
+			<fieldset name="pinterest" label="Pinterest">
+				<field name="pinterest" default="1" type="radio" class="btn-group" label="Pinterest" description="Pinterest">
+					<option value="1">JSHOW</option>
+					<option value="0">JHIDE</option>
+				</field>
+			</fieldset>
+			
+			<fieldset name="stumbleupon" label="StumbleUpon">
+				<field name="stumbleupon" default="1" type="radio" class="btn-group" label="StumbleUpon" description="StumbleUpon">
+					<option value="1">JSHOW</option>
+					<option value="0">JHIDE</option>
+				</field>
+			</fieldset>
+			
+			<fieldset name="delicious" label="Delicious">
+				<field name="delicious" default="1" type="radio" class="btn-group" label="Delicious" description="Delicious">
+					<option value="1">JSHOW</option>
+					<option value="0">JHIDE</option>
+				</field>
+			</fieldset>
+		</fields>
+	</config>
+	<updateservers>
+		<server type="extension" priority="1" name="NOVUSIDEA Updates">http://updates.novusidea.de/plg/plg_content_socialshare/plg_content_socialshare.xml</server>
+	</updateservers>
+</extension>
