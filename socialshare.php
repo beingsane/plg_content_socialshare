@@ -41,7 +41,7 @@ class PlgContentSocialShare extends JPlugin {
 		if( !defined('SOCIALSHARE_LOADED') ) {
 			$doc->addScriptDeclaration($this->loadAjax());
 			$doc->addStylesheet('plugins/content/socialshare/themes/' . $theme . '/css/styles.css');
-			require_once(JPATH_PLUGINS . DS . 'content' . DS . 'socialshare' . DS . 'assets' . DS . 'socialshares.php');
+			require_once(JPATH_PLUGINS . DS . 'content' . DS . 'socialshare' . DS . 'assets' . DS . 'shareclass' . DS . 'shares.php');
 			$socialshares = new SocialShares();
 			define('SOCIALSHARE_LOADED', true);
 		}
@@ -111,7 +111,7 @@ class PlgContentSocialShare extends JPlugin {
 				
 				jQuery.ajax({
 					type: 'POST',
-					url: '" . JURI::root() . "plugins/content/socialshare/assets/getlikes.php',
+					url: '" . JURI::root() . "plugins/content/socialshare/assets/shareclass/ajax.php',
 					data: {
 						url: url,
 						service: service

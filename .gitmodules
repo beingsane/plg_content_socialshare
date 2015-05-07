@@ -1,0 +1,3 @@
+[submodule "assets/shareclass"]
+	path = assets/shareclass
+	url = https://novusidea@bitbucket.org/novusidea/shareclass.git
