@@ -45,6 +45,7 @@ class PlgContentSocialShare extends JPlugin {
 			$socialshares = new SocialShares();
 			define('SOCIALSHARE_LOADED', true);
 		}
+		
 		$url = $uri->toString( array ('scheme', 'host', 'port' ) ) . JRoute::_( ContentHelperRoute::getArticleRoute( $row->slug, $row->catid ) );
 		
 		$html = '<ul class="social-shares">';
