@@ -7,7 +7,7 @@
 	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
 	<authorEmail>admin@joomla.org</authorEmail>
 	<authorUrl>www.joomla.org</authorUrl>
-	<version>0.0.4</version>
+	<version>0.0.5</version>
 	<description>PLG_SOCIALSHARE_XML_DESCRIPTION</description>
 	<files>
 		<filename plugin="socialshare">socialshare.php</filename>
@@ -28,8 +28,8 @@
 			
 				<field name="theme" default="basic" type="list" label="PLG_CONTENT_SOCIALSHARE_THEME_LABEL" description="PLG_CONTENT_SOCIALSHARE_THEME_DESC">					
 					<option value="basic">PLG_CONTENT_SHARE_THEME_BASIC</option>
-					<option value="buttons">PLG_CONTENT_SHARE_THEME_buttons</option>
-					<option value="metroui">PLG_CONTENT_SHARE_THEME_metroui</option>
+					<option value="metro">PLG_CONTENT_SHARE_THEME_METRO</option>
+					<option value="flat">PLG_CONTENT_SHARE_THEME_METRO</option>
 				</field>
 			
 				<field name="position" default="onContentBeforeDisplay" type="list" label="PLG_CONTENT_SOCIALSHARE_POSITION_LABEL" description="PLG_CONTENT_SOCIALSHARE_POSITION_DESC">					
@@ -47,12 +47,11 @@
 				
 			</fieldset>
 			
-			<fieldset name="twitter" label="Twitter">
-				<field name="twitter" default="1" type="radio" class="btn-group" label="Twitter" description="Twitter">
+			<fieldset name="googleplus" label="Google+">
+				<field name="googleplus" default="1" type="radio" class="btn-group" label="Google+" description="Google+">
 					<option value="1">JSHOW</option>
 					<option value="0">JHIDE</option>
 				</field>
-				<field name="twitter-via" default="" type="text" class="btn-group" label="Username" description="Username" />
 			</fieldset>
 			
 			<fieldset name="facebook" label="Facebook">
@@ -62,11 +61,12 @@
 				</field>
 			</fieldset>
 			
-			<fieldset name="google" label="Google+">
-				<field name="google" default="1" type="radio" class="btn-group" label="Google+" description="Google+">
+			<fieldset name="twitter" label="Twitter">
+				<field name="twitter" default="1" type="radio" class="btn-group" label="Twitter" description="Twitter">
 					<option value="1">JSHOW</option>
 					<option value="0">JHIDE</option>
 				</field>
+				<field name="twitter-via" default="" type="text" class="btn-group" label="Username" description="Username" />
 			</fieldset>
 			
 			<fieldset name="linkedin" label="LinkedIn">

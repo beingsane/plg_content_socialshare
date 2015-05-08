@@ -28,27 +28,41 @@ class PlgContentSocialShare extends JPlugin {
 		$user	= JFactory::getUser();
 		$uri	= JFactory::getURI();
 		
-		$theme	= $this->params->get('theme', 'basic');
-		$view	= $app->input->getCmd('view');
-		$views	= $this->params->get('views');
+		$twittervia	= $this->params->get('twitter-via');
+		$theme		= $this->params->get('theme', 'basic');
+		$view		= $app->input->getCmd('view');
+		$views		= $this->params->get('views');
+		$html		= '';
 		
 		$serviceArray = '';
 	
 		if( !$user->id AND $app->getName() != 'site' ) {
 			return false;
 		}
+	
+		if( !in_array($view, $views) AND count($views) != 0 ) {
+			return false;
+		}
+		
+		/*
+		$html .= '<pre>';
+		$html .= count($views) . '<br>';
+		$html .= print_r($views, true);
+		$html .= '</pre>';
+		//*/
+		
 		
 		if( !defined('SOCIALSHARE_LOADED') ) {
+			$doc->addStylesheet('plugins/content/socialshare/assets/socialshare/themes/' . $theme . '/css/styles.min.css');
 			$doc->addScriptDeclaration($this->loadAjax());
-			$doc->addStylesheet('plugins/content/socialshare/themes/' . $theme . '/css/styles.css');
-			require_once(JPATH_PLUGINS . DS . 'content' . DS . 'socialshare' . DS . 'assets' . DS . 'shareclass' . DS . 'shares.php');
+			require_once(JPATH_PLUGINS . DS . 'content' . DS . 'socialshare' . DS . 'assets' . DS . 'socialshare' . DS . 'library' . DS . 'shares.php');
 			$socialshares = new SocialShares();
 			define('SOCIALSHARE_LOADED', true);
 		}
 		
 		$url = $uri->toString( array ('scheme', 'host', 'port' ) ) . JRoute::_( ContentHelperRoute::getArticleRoute( $row->slug, $row->catid ) );
 		
-		$html = '<ul class="social-shares">';
+		$html .= '<ul class="social-shares">';
 		
 		foreach( $socialshares->services as $service => $options ) {
 			if( $this->params->get( $service ) ) {
@@ -56,22 +70,12 @@ class PlgContentSocialShare extends JPlugin {
 			}
 		}
 		
-		/*
-		echo '<pre>';
-		//print_r($serviceArray);
-		print_r($view);
-		echo '<br>';
-		print_r($views);
-		print_r( $this->isView($view, $views) );
-		echo '</pre>';
-		*/
-		
 		foreach( $serviceArray as $service => $options ) {
 		
 			$params = '';
 			
-			if( $service == 'twitter' ) {
-				$params = '&amp;via=' . $this->params->get( 'twitter-via' );
+			if( $service == 'twitter' AND !empty($twittervia) ) {
+				$params = '&amp;via=' . $twittervia;
 			}
 		
 			$html .= '<li class="' . $service . '">';
@@ -88,16 +92,6 @@ class PlgContentSocialShare extends JPlugin {
 		return $html;
 	}
 	
-	protected function isView( $needle, $haystack) {
-		
-		if( !count($haystack) OR in_array($needle, $haystack) ) {
-			return true;			
-		} else {
-			return false;
-		}
-		
-	}
-	
 	protected function loadAjax() {
 		return "		jQuery(document).ready(function (){
 			jQuery('.social-shares > li').each(function(i, e){
@@ -112,7 +106,7 @@ class PlgContentSocialShare extends JPlugin {
 				
 				jQuery.ajax({
 					type: 'POST',
-					url: '" . JURI::root() . "plugins/content/socialshare/assets/shareclass/ajax.php',
+					url: '" . JURI::root() . "plugins/content/socialshare/assets/socialshare/ajax.php',
 					data: {
 						url: url,
 						service: service
