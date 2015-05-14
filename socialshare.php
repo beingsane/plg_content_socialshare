@@ -32,21 +32,27 @@ class PlgContentSocialShare extends JPlugin {
 		$theme		= $this->params->get('theme', 'basic');
 		$view		= $app->input->getCmd('view');
 		$views		= $this->params->get('views');
+		$cssId		= $this->params->get('css_id') ? ' id="' . $this->params->get('css_id') . '"' : '';
+		$cssClass	= $this->params->get('css_class') ? ' ' . $this->params->get('css_class') : '';
 		$html		= '';
-		
 		$serviceArray = '';
-	
+		
+		$bitlyState			= (boolean) $this->params->get('bitly-state');
+		$bitlyDomain		= (string) $this->params->get('bitly-domain');
+		$bitlyAccessToken	= (string) $this->params->get('bitly-access-token');
+		
 		if( !$user->id AND $app->getName() != 'site' ) {
 			return false;
 		}
-	
-		if( !in_array($view, $views) AND count($views) != 0 ) {
+		
+		if( !in_array($view, $views) ) {
 			return false;
 		}
-		
+	
 		/*
 		$html .= '<pre>';
 		$html .= count($views) . '<br>';
+		$html .= print_r($view, true) . '<br>';
 		$html .= print_r($views, true);
 		$html .= '</pre>';
 		//*/
@@ -56,13 +62,24 @@ class PlgContentSocialShare extends JPlugin {
 			$doc->addStylesheet('plugins/content/socialshare/assets/socialshare/themes/' . $theme . '/css/styles.min.css');
 			$doc->addScriptDeclaration($this->loadAjax());
 			require_once(JPATH_PLUGINS . DS . 'content' . DS . 'socialshare' . DS . 'assets' . DS . 'socialshare' . DS . 'library' . DS . 'shares.php');
-			$socialshares = new SocialShares();
 			define('SOCIALSHARE_LOADED', true);
 		}
 		
-		$url = $uri->toString( array ('scheme', 'host', 'port' ) ) . JRoute::_( ContentHelperRoute::getArticleRoute( $row->slug, $row->catid ) );
+		$longUrl = $uri->toString( array ('scheme', 'host', 'port' ) ) . JRoute::_( ContentHelperRoute::getArticleRoute( $row->slug, $row->catid ) );
+
+		if( $bitlyState AND !empty($bitlyDomain) AND !empty($bitlyAccessToken) ) {
+			$shortUrl = trim( file_get_contents('https://api-ssl.bitly.com/v3/shorten?access_token=' . $bitlyAccessToken . '&longUrl=' . urlencode($longUrl) . '&domain=' . $bitlyDomain . '&format=txt') );
+		}
 		
-		$html .= '<ul class="social-shares">';
+		if( !empty($shortUrl) ) {
+			$url = $shortUrl;
+		} else {
+			$url = $longUrl;
+		}
+		
+		$html .= '<ul' . $cssId . ' class="social-shares' . $cssClass . '" data-url="' . $longUrl . '">';
+		
+		$socialshares = new SocialShares();
 		
 		foreach( $socialshares->services as $service => $options ) {
 			if( $this->params->get( $service ) ) {
@@ -78,10 +95,10 @@ class PlgContentSocialShare extends JPlugin {
 				$params = '&amp;via=' . $twittervia;
 			}
 		
-			$html .= '<li class="' . $service . '">';
-			$html .= '<a href="' . $socialshares->getUrlToShare($service, $url, $row->title) . $params . '" data-url="' . $url . '" data-service="' . $service .'">';
+			$html .= '<li class="' . $service . '" data-service="' . $service . '">';
+			$html .= '<a href="' . $socialshares->getUrlToShare($service, $url, $row->title) . $params . '" class="' . $service . '">';
 			$html .= '<span class="service">' . $options['name'] . '</span>';
-			$html .= '<span class="count loading">&nbsp;</span>';
+			$html .= '<span class="count">&nbsp;</span>';
 			$html .= '</a>';
 			$html .= '</li>';
 			
@@ -93,32 +110,40 @@ class PlgContentSocialShare extends JPlugin {
 	}
 	
 	protected function loadAjax() {
+		
 		return "		jQuery(document).ready(function (){
-			jQuery('.social-shares > li').each(function(i, e){
-				var a		= $(this).children('a');
-				var url		= a.data('url');
-				var service	= a.data('service');
+			var shareUl	= jQuery('.social-shares');
+			var shareLi	= shareUl.children('li');
+			var shareA	= shareLi.children('a');
+			
+			shareLi.addClass('loading');
 				
-				a.on('click', function(e){
-					window.open( jQuery(this).attr('href'), service, \"width=500, height=580, left=50, top=50\" );
-					e.preventDefault();
-				});
+			shareA.on('click', function(e){
+				window.open( jQuery(this).attr('href'), jQuery(this).parent('li').data('service'), \"width=500, height=580, left=50, top=50\" );
+				e.preventDefault();
+			});
+			
+			shareLi.each(function(i, e){
+				
+				var li	= jQuery(this);
+				var a	= li.children('a');
 				
 				jQuery.ajax({
 					type: 'POST',
 					url: '" . JURI::root() . "plugins/content/socialshare/assets/socialshare/ajax.php',
 					data: {
-						url: url,
-						service: service
+						url: shareUl.data('url'),
+						service: li.data('service')
 					},
 					success: function(data){
-						a.children('.count').removeClass('loading');
+						li.removeClass('loading');
 						a.children('.count').text(data);
 					},
 					error: function(jqXHR, textStatus, errorThrown){
 						a.children('.count').addClass('error').removeClass('loading');
 					}
 				});
+				
 			});
 		});";
 	}
