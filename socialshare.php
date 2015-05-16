@@ -32,10 +32,10 @@ class PlgContentSocialShare extends JPlugin {
 		$theme		= $this->params->get('theme', 'basic');
 		$view		= $app->input->getCmd('view');
 		$views		= $this->params->get('views');
-		$cssId		= $this->params->get('css_id') ? ' id="' . $this->params->get('css_id') . '"' : '';
-		$cssClass	= $this->params->get('css_class') ? ' ' . $this->params->get('css_class') : '';
+		$cssId		= $this->params->get('css_id') ? $this->params->get('css_id') : '';
+		$cssClass	= $this->params->get('css_class') ? $this->params->get('css_class') : '';
 		$html		= '';
-		$serviceArray = '';
+		$newServiceArray = '';
 		
 		$bitlyState			= (boolean) $this->params->get('bitly-state');
 		$bitlyDomain		= (string) $this->params->get('bitly-domain');
@@ -48,7 +48,7 @@ class PlgContentSocialShare extends JPlugin {
 		if( !in_array($view, $views) ) {
 			return false;
 		}
-	
+		
 		/*
 		$html .= '<pre>';
 		$html .= count($views) . '<br>';
@@ -67,6 +67,7 @@ class PlgContentSocialShare extends JPlugin {
 		
 		$longUrl = $uri->toString( array ('scheme', 'host', 'port' ) ) . JRoute::_( ContentHelperRoute::getArticleRoute( $row->slug, $row->catid ) );
 
+		// TODO: Error-Handling. If you test oin localhost, bitly give an 500-Error :-/
 		if( $bitlyState AND !empty($bitlyDomain) AND !empty($bitlyAccessToken) ) {
 			$shortUrl = trim( file_get_contents('https://api-ssl.bitly.com/v3/shorten?access_token=' . $bitlyAccessToken . '&longUrl=' . urlencode($longUrl) . '&domain=' . $bitlyDomain . '&format=txt') );
 		}
@@ -77,34 +78,34 @@ class PlgContentSocialShare extends JPlugin {
 			$url = $longUrl;
 		}
 		
-		$html .= '<ul' . $cssId . ' class="social-shares' . $cssClass . '" data-url="' . $longUrl . '">';
+		$layoutPath = JPluginHelper::getLayoutPath('content', 'socialshare');
 		
 		$socialshares = new SocialShares();
 		
 		foreach( $socialshares->services as $service => $options ) {
 			if( $this->params->get( $service ) ) {
-				$serviceArray[$service] = $options;
+				
+				$params = '';
+				if( $service == 'twitter' AND !empty($twittervia) ) {
+					$params = '&amp;via=' . $twittervia;
+				}
+				
+				$newServiceArray['options']['css-id'] = $cssId;
+				$newServiceArray['options']['css-class'] = $cssClass;
+				$newServiceArray['options']['article-id'] = $app->input->getCmd('id');
+				$newServiceArray['options']['article-url'] = $longUrl;
+				$newServiceArray['services'][$service] = $options;
+				$newServiceArray['services'][$service]['share-url'] = $socialshares->getUrlToShare($service, $url, $row->title) . $params;
+				
 			}
 		}
 		
-		foreach( $serviceArray as $service => $options ) {
+		ob_start();
 		
-			$params = '';
-			
-			if( $service == 'twitter' AND !empty($twittervia) ) {
-				$params = '&amp;via=' . $twittervia;
-			}
+		require_once($layoutPath);
 		
-			$html .= '<li class="' . $service . '" data-service="' . $service . '">';
-			$html .= '<a href="' . $socialshares->getUrlToShare($service, $url, $row->title) . $params . '" class="' . $service . '">';
-			$html .= '<span class="service">' . $options['name'] . '</span>';
-			$html .= '<span class="count">&nbsp;</span>';
-			$html .= '</a>';
-			$html .= '</li>';
-			
-			unset($params);
-		}
-		$html .= '</ul>';
+		$html = ob_get_contents();
+		ob_end_clean();
 
 		return $html;
 	}

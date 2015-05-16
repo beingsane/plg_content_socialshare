@@ -60,16 +60,16 @@
 					<option value="0">JHIDE</option>
 				</field>
 			
-				<field name="facebook" default="1" type="radio" class="btn-group" label="Facebook" description="Facebook">
-					<option value="1">JSHOW</option>
-					<option value="0">JHIDE</option>
-				</field>
-			
 				<field name="twitter" default="1" type="radio" class="btn-group" label="Twitter" description="Twitter">
 					<option value="1">JSHOW</option>
 					<option value="0">JHIDE</option>
 				</field>
 				<field name="twitter-via" default="" type="text" class="btn-group" label="Twitter Username" description="Username" />
+			
+				<field name="facebook" default="1" type="radio" class="btn-group" label="Facebook" description="Facebook">
+					<option value="1">JSHOW</option>
+					<option value="0">JHIDE</option>
+				</field>
 			
 				<field name="linkedin" default="1" type="radio" class="btn-group" label="LinkedIn" description="LinkedIn">
 					<option value="1">JSHOW</option>
